@@ -43,7 +43,7 @@ let chatHistory = [];
 // ================= HOME =================
 
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
+  res.redirect("/login.html");
 });
 // ================= SIGNUP API =================
 
