@@ -52,6 +52,16 @@ label{
     font-size:13px;
 }
 
+.password-box{
+    position:relative;
+    margin-bottom:16px;
+}
+
+.password-box input{
+    margin-bottom:0;
+    padding-right:45px;
+}
+
 input{
     width:100%;
     padding:13px;
@@ -66,6 +76,21 @@ input{
 
 input:focus{
     border-color:#00ffcc;
+}
+
+.show-password{
+    position:absolute;
+    right:12px;
+    top:50%;
+    transform:translateY(-50%);
+    cursor:pointer;
+    font-size:18px;
+    color:#aaa;
+    user-select:none;
+}
+
+.show-password:hover{
+    color:#00ffcc;
 }
 
 button{
@@ -137,12 +162,22 @@ button:disabled{
 
     <label>Password</label>
 
-    <input
-        id="password"
-        type="password"
-        placeholder="Create a password"
-        autocomplete="new-password"
-    >
+    <div class="password-box">
+
+        <input
+            id="password"
+            type="password"
+            placeholder="Create a password"
+            autocomplete="new-password"
+        >
+
+        <span
+            id="showPassword"
+            class="show-password"
+            title="Show password"
+        >👁️</span>
+
+    </div>
 
     <button id="signupButton">
         Sign Up
@@ -168,6 +203,43 @@ const passwordInput =
 
 const signupButton =
     document.getElementById("signupButton");
+
+const showPassword =
+    document.getElementById("showPassword");
+
+
+showPassword.addEventListener(
+    "click",
+    () => {
+
+        if (
+            passwordInput.type ===
+            "password"
+        ) {
+
+            passwordInput.type =
+                "text";
+
+            showPassword.textContent =
+                "🙈";
+
+            showPassword.title =
+                "Hide password";
+
+        } else {
+
+            passwordInput.type =
+                "password";
+
+            showPassword.textContent =
+                "👁️";
+
+            showPassword.title =
+                "Show password";
+        }
+
+    }
+);
 
 
 signupButton.addEventListener(
