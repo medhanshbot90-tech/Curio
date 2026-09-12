@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -208,18 +209,22 @@ button:disabled{
 
     </div>
 
-    <button id="signupButton">
+    <button
+        id="signupButton"
+        type="button"
+    >
         Sign Up
     </button>
 
     <div class="login">
         Already have an account?
-        <a href="login.html">
+        <a href="/login.html">
             Login
         </a>
     </div>
 
 </div>
+
 
 <script>
 
@@ -245,31 +250,28 @@ const showConfirmPassword =
     document.getElementById("showConfirmPassword");
 
 
+/* Password Show / Hide */
+
 showPassword.addEventListener(
     "click",
     () => {
 
         if (
-            passwordInput.type ===
-            "password"
+            passwordInput.type === "password"
         ) {
 
-            passwordInput.type =
-                "text";
+            passwordInput.type = "text";
 
-            showPassword.textContent =
-                "🙈";
+            showPassword.textContent = "🙈";
 
             showPassword.title =
                 "Hide password";
 
         } else {
 
-            passwordInput.type =
-                "password";
+            passwordInput.type = "password";
 
-            showPassword.textContent =
-                "👁️";
+            showPassword.textContent = "👁️";
 
             showPassword.title =
                 "Show password";
@@ -278,18 +280,18 @@ showPassword.addEventListener(
     }
 );
 
+
+/* Confirm Password Show / Hide */
 
 showConfirmPassword.addEventListener(
     "click",
     () => {
 
         if (
-            confirmPasswordInput.type ===
-            "password"
+            confirmPasswordInput.type === "password"
         ) {
 
-            confirmPasswordInput.type =
-                "text";
+            confirmPasswordInput.type = "text";
 
             showConfirmPassword.textContent =
                 "🙈";
@@ -312,6 +314,8 @@ showConfirmPassword.addEventListener(
     }
 );
 
+
+/* Signup */
 
 signupButton.addEventListener(
     "click",
@@ -330,9 +334,118 @@ signupButton.addEventListener(
             confirmPasswordInput.value;
 
 
+        /* Empty field check */
+
         if (
             !name ||
             !email ||
             !password ||
             !confirmPassword
         ) {
+
+            alert(
+                "Please fill all fields."
+            );
+
+            return;
+        }
+
+
+        /* Password match check */
+
+        if (
+            password !== confirmPassword
+        ) {
+
+            alert(
+                "Passwords do not match."
+            );
+
+            return;
+        }
+
+
+        signupButton.disabled = true;
+
+        signupButton.textContent =
+            "Creating account...";
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/signup",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify({
+                                name:
+                                    name,
+
+                                email:
+                                    email,
+
+                                password:
+                                    password
+                            })
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (data.success) {
+
+                alert(
+                    "Account created successfully! 🎉"
+                );
+
+                window.location.href =
+                    "/login.html";
+
+            } else {
+
+                alert(
+                    data.message ||
+                    "Signup failed."
+                );
+            }
+
+
+        } catch (error) {
+
+            console.error(
+                "Signup Error:",
+                error
+            );
+
+            alert(
+                "Unable to connect to Curio server."
+            );
+
+        } finally {
+
+            signupButton.disabled =
+                false;
+
+            signupButton.textContent =
+                "Sign Up";
+        }
+
+    }
+);
+
+</script>
+
+</body>
+</html>
+```
