@@ -4,6 +4,7 @@ const path = require("path");
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const User = require("./models/User");
+
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
     console.log("MongoDB Connected Successfully");
@@ -11,6 +12,7 @@ mongoose.connect(process.env.MONGODB_URI)
   .catch((error) => {
     console.log("MongoDB Connection Error:", error);
   });
+
 const fetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) =>
     fetch(...args)
@@ -20,6 +22,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+
 app.use(express.static(__dirname, {
   index: false
 }));
@@ -43,8 +46,9 @@ let chatHistory = [];
 // ================= HOME =================
 
 app.get("/", (req, res) => {
-  res.redirect("/login.html");
+  res.sendFile(path.join(__dirname, "index.html"));
 });
+
 // ================= SIGNUP API =================
 
 app.post("/signup", async (req, res) => {
@@ -97,8 +101,9 @@ app.post("/signup", async (req, res) => {
       message: "Signup failed. Please try again."
     });
   }
+});
 
-});// ================= LOGIN API =================
+// ================= LOGIN API =================
 
 app.post("/login", async (req, res) => {
   try {
