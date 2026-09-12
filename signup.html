@@ -52,16 +52,6 @@ label{
     font-size:13px;
 }
 
-.password-box{
-    position:relative;
-    margin-bottom:16px;
-}
-
-.password-box input{
-    margin-bottom:0;
-    padding-right:45px;
-}
-
 input{
     width:100%;
     padding:13px;
@@ -76,6 +66,16 @@ input{
 
 input:focus{
     border-color:#00ffcc;
+}
+
+.password-box{
+    position:relative;
+    margin-bottom:16px;
+}
+
+.password-box input{
+    margin-bottom:0;
+    padding-right:45px;
 }
 
 .show-password{
@@ -136,13 +136,17 @@ button:disabled{
 
 <div class="signup-box">
 
-    <div class="logo">Curio ⚡</div>
+    <div class="logo">
+        Curio ⚡
+    </div>
 
     <div class="subtitle">
         Create your account
     </div>
 
-    <label>Name</label>
+    <label>
+        Name
+    </label>
 
     <input
         id="name"
@@ -151,7 +155,9 @@ button:disabled{
         autocomplete="name"
     >
 
-    <label>Email</label>
+    <label>
+        Email
+    </label>
 
     <input
         id="email"
@@ -160,7 +166,9 @@ button:disabled{
         autocomplete="email"
     >
 
-    <label>Password</label>
+    <label>
+        Password
+    </label>
 
     <div class="password-box">
 
@@ -179,13 +187,36 @@ button:disabled{
 
     </div>
 
+    <label>
+        Confirm Password
+    </label>
+
+    <div class="password-box">
+
+        <input
+            id="confirmPassword"
+            type="password"
+            placeholder="Confirm your password"
+            autocomplete="new-password"
+        >
+
+        <span
+            id="showConfirmPassword"
+            class="show-password"
+            title="Show password"
+        >👁️</span>
+
+    </div>
+
     <button id="signupButton">
         Sign Up
     </button>
 
     <div class="login">
         Already have an account?
-        <a href="login.html">Login</a>
+        <a href="login.html">
+            Login
+        </a>
     </div>
 
 </div>
@@ -201,11 +232,17 @@ const emailInput =
 const passwordInput =
     document.getElementById("password");
 
+const confirmPasswordInput =
+    document.getElementById("confirmPassword");
+
 const signupButton =
     document.getElementById("signupButton");
 
 const showPassword =
     document.getElementById("showPassword");
+
+const showConfirmPassword =
+    document.getElementById("showConfirmPassword");
 
 
 showPassword.addEventListener(
@@ -242,6 +279,40 @@ showPassword.addEventListener(
 );
 
 
+showConfirmPassword.addEventListener(
+    "click",
+    () => {
+
+        if (
+            confirmPasswordInput.type ===
+            "password"
+        ) {
+
+            confirmPasswordInput.type =
+                "text";
+
+            showConfirmPassword.textContent =
+                "🙈";
+
+            showConfirmPassword.title =
+                "Hide password";
+
+        } else {
+
+            confirmPasswordInput.type =
+                "password";
+
+            showConfirmPassword.textContent =
+                "👁️";
+
+            showConfirmPassword.title =
+                "Show password";
+        }
+
+    }
+);
+
+
 signupButton.addEventListener(
     "click",
     async () => {
@@ -255,101 +326,13 @@ signupButton.addEventListener(
         const password =
             passwordInput.value;
 
+        const confirmPassword =
+            confirmPasswordInput.value;
+
 
         if (
             !name ||
             !email ||
-            !password
+            !password ||
+            !confirmPassword
         ) {
-
-            alert(
-                "Please fill all fields."
-            );
-
-            return;
-        }
-
-
-        signupButton.disabled = true;
-
-        signupButton.textContent =
-            "Creating account...";
-
-
-        try {
-
-            const response =
-                await fetch(
-                    "/signup",
-                    {
-                        method: "POST",
-
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
-
-                        body:
-                            JSON.stringify({
-                                name:
-                                    name,
-
-                                email:
-                                    email,
-
-                                password:
-                                    password
-                            })
-                    }
-                );
-
-
-            const data =
-                await response.json();
-
-
-            if (data.success) {
-
-                alert(
-                    "Account created successfully! 🎉"
-                );
-
-                window.location.href =
-                    "login.html";
-
-            } else {
-
-                alert(
-                    data.message ||
-                    "Signup failed."
-                );
-            }
-
-
-        } catch (error) {
-
-            console.error(
-                "Signup Error:",
-                error
-            );
-
-            alert(
-                "Unable to connect to Curio server."
-            );
-
-        } finally {
-
-            signupButton.disabled =
-                false;
-
-            signupButton.textContent =
-                "Sign Up";
-        }
-
-    }
-);
-
-</script>
-
-</body>
-</html>
