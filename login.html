@@ -68,6 +68,31 @@ input:focus{
     border-color:#00ffcc;
 }
 
+.password-box{
+    position:relative;
+    margin-bottom:16px;
+}
+
+.password-box input{
+    margin-bottom:0;
+    padding-right:45px;
+}
+
+.show-password{
+    position:absolute;
+    right:12px;
+    top:50%;
+    transform:translateY(-50%);
+    cursor:pointer;
+    font-size:18px;
+    color:#aaa;
+    user-select:none;
+}
+
+.show-password:hover{
+    color:#00ffcc;
+}
+
 button{
     width:100%;
     padding:13px;
@@ -134,12 +159,22 @@ button:disabled{
         Password
     </label>
 
-    <input
-        id="password"
-        type="password"
-        placeholder="Enter your password"
-        autocomplete="current-password"
-    >
+    <div class="password-box">
+
+        <input
+            id="password"
+            type="password"
+            placeholder="Enter your password"
+            autocomplete="current-password"
+        >
+
+        <span
+            id="showPassword"
+            class="show-password"
+            title="Show password"
+        >👁️</span>
+
+    </div>
 
     <button id="loginButton">
         Login
@@ -164,6 +199,43 @@ const passwordInput =
 
 const loginButton =
     document.getElementById("loginButton");
+
+const showPassword =
+    document.getElementById("showPassword");
+
+
+showPassword.addEventListener(
+    "click",
+    () => {
+
+        if (
+            passwordInput.type ===
+            "password"
+        ) {
+
+            passwordInput.type =
+                "text";
+
+            showPassword.textContent =
+                "🙈";
+
+            showPassword.title =
+                "Hide password";
+
+        } else {
+
+            passwordInput.type =
+                "password";
+
+            showPassword.textContent =
+                "👁️";
+
+            showPassword.title =
+                "Show password";
+        }
+
+    }
+);
 
 
 loginButton.addEventListener(
