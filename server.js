@@ -46,7 +46,7 @@ let chatHistory = [];
 // ================= HOME =================
 
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
+  res.redirect("/login.html");
 });
 
 // ================= SIGNUP API =================
@@ -282,7 +282,7 @@ async function needsWebSearch(message) {
             "application/json",
 
           "HTTP-Referer":
-            "https://curio-sphs.onrender.com",
+            "https://curio-x8mx.onrender.com",
 
           "X-Title":
             "Curio"
@@ -643,7 +643,7 @@ async function askOpenRouter(messages) {
             "application/json",
 
           "HTTP-Referer":
-            "https://curio-sphs.onrender.com",
+            "https://curio-x8mx.onrender.com",
 
           "X-Title":
             "Curio"
@@ -718,8 +718,6 @@ app.post("/chat", async (req, res) => {
       web
     } = req.body;
 
-    // ================= MESSAGE CHECK =================
-
     if (
       !message ||
       typeof message !== "string" ||
@@ -738,8 +736,6 @@ app.post("/chat", async (req, res) => {
     const userMessage =
       message.trim();
 
-    // ================= AUTO WEB DECISION =================
-
     const autoWeb =
       await needsWebSearch(
         userMessage
@@ -757,8 +753,6 @@ app.post("/chat", async (req, res) => {
 
     let webContext = "";
     let sources = [];
-
-    // ================= WEB SEARCH =================
 
     if (useWeb) {
       console.log(
@@ -789,8 +783,6 @@ app.post("/chat", async (req, res) => {
       }
     }
 
-    // ================= CURRENT DATE =================
-
     const today =
       new Date().toLocaleString(
         "en-IN",
@@ -801,8 +793,6 @@ app.post("/chat", async (req, res) => {
             "Asia/Kolkata"
         }
       );
-
-    // ================= SYSTEM PROMPT =================
 
     let systemPrompt = `
 You are Curio, an intelligent AI assistant.
@@ -835,8 +825,6 @@ Then reply exactly:
 "I was created by Medhansh Bisht 😎🔥"
 `;
 
-    // ================= ADD WEB RESULTS =================
-
     if (webContext) {
       systemPrompt += `
 
@@ -855,8 +843,6 @@ WEB SEARCH INSTRUCTIONS:
 `;
     }
 
-    // ================= CHAT HISTORY =================
-
     chatHistory.push({
       role: "user",
       content: userMessage
@@ -866,8 +852,6 @@ WEB SEARCH INSTRUCTIONS:
       chatHistory =
         chatHistory.slice(-16);
     }
-
-    // ================= AI MESSAGES =================
 
     const aiMessages = [
       {
@@ -879,7 +863,6 @@ WEB SEARCH INSTRUCTIONS:
     ];
 
     // ==================================================
-    // AI FALLBACK SYSTEM
     // GEMINI → GROQ → OPENROUTER → TAVILY
     // ==================================================
 
@@ -901,7 +884,7 @@ WEB SEARCH INSTRUCTIONS:
       provider = "Gemini";
     }
 
-    // ================= GROQ FALLBACK =================
+    // ================= GROQ =================
 
     if (!reply) {
       console.log(
@@ -918,7 +901,7 @@ WEB SEARCH INSTRUCTIONS:
       }
     }
 
-    // ================= OPENROUTER FALLBACK =================
+    // ================= OPENROUTER =================
 
     if (!reply) {
       console.log(
@@ -935,9 +918,7 @@ WEB SEARCH INSTRUCTIONS:
       }
     }
 
-    // ==================================================
-    // FINAL WEB FALLBACK
-    // ==================================================
+    // ================= TAVILY FALLBACK =================
 
     if (!reply) {
       console.log(
@@ -953,9 +934,7 @@ WEB SEARCH INSTRUCTIONS:
           userMessage
         );
 
-      if (
-        fallbackWeb.text
-      ) {
+      if (fallbackWeb.text) {
         sources =
           fallbackWeb.sources;
 
@@ -994,8 +973,6 @@ Rules:
           }
         ];
 
-        // Try OpenRouter once more to turn
-        // the web results into a proper answer.
         reply =
           await askOpenRouter(
             fallbackMessages
@@ -1005,8 +982,6 @@ Rules:
           provider =
             "Tavily + OpenRouter";
         } else {
-          // If OpenRouter also fails,
-          // return the web text directly.
           reply =
             fallbackWeb.text;
 
